@@ -1,9 +1,13 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+const mode = process.env.NODE_ENV || 'development';
+const prod = mode === 'production';
 
 module.exports = {
-    mode: 'development',
-    devtool: 'source-map', // inline-source-map
+    mode: mode,
+    devtool: prod ? false : 'source-map', // inline-source-map
     devServer: {
         static: './dist',
     },
@@ -20,7 +24,7 @@ module.exports = {
         rules: [
             {
                 test: /\.css$/i,
-                use: ['style-loader', 'css-loader']
+                use: [prod ? MiniCssExtractPlugin.loader : 'style-loader', 'css-loader']
             },
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
@@ -39,6 +43,9 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             title: 'Hello Webpack Development'
+        }),
+        new MiniCssExtractPlugin({
+            filename: '[name].css'
         })
     ]
 };
